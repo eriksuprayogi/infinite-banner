@@ -5,10 +5,6 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-/**
- * Created by Sai on 15/7/29.
- * 翻页指示器适配器
- */
 public class CBPageChangeListener implements ViewPager.OnPageChangeListener {
     private ArrayList<ImageView> pointViews;
     private int[] page_indicatorId;

@@ -17,7 +17,8 @@ public class NetworkImageHolderView implements Holder<String> {
 
     @Override
     public Fragment createFragment(String data) {
-        return ContentFragment.newInstance();
+//        return ContentFragment.newInstance(data);
+        return null;
     }
 
 }

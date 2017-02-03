@@ -5,7 +5,7 @@ import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
 public class ViewPagerScroller extends Scroller {
-	private int mScrollDuration = 800;// 滑动速度,值越大滑动越慢，滑动太快会使3d效果不明显
+	private int mScrollDuration = 800;
 	private boolean zero;
 
 	public ViewPagerScroller(Context context) {

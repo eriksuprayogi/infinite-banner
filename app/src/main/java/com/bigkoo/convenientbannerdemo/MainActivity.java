@@ -3,6 +3,8 @@ package com.bigkoo.convenientbannerdemo;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -61,7 +63,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     }
 
     private void init(){
-        initImageLoader();
         loadTestDatas();
 
         convenientBanner.setPages(getSupportFragmentManager(), 
@@ -71,60 +72,26 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                         return new LocalImageHolderView();
                     }
                 }, localImages)
-                .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
-                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT)
-//                .setOnPageChangeListener(this)
+                .setPageIndicator(new int[]{R.drawable.indicator, R.drawable.indicator_focus})
                 .setOnItemClickListener(this);
         convenientBanner.getViewPager().setPageMargin(getResources().getDimensionPixelOffset(R.dimen.viewpager_margin));
-//        convenientBanner.setManualPageable(false);//设置不能手动影响
-
-        //网络加载例子
-//        networkImages=Arrays.asList(images);
-//        convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
-//            @Override
-//            public NetworkImageHolderView createHolder() {
-//                return new NetworkImageHolderView();
-//            }
-//        },networkImages);
-
-
-
-//手动New并且添加到ListView Header的例子
-//        ConvenientBanner mConvenientBanner = new ConvenientBanner(this,false);
-//        mConvenientBanner.setMinimumHeight(500);
-//        mConvenientBanner.setPages(
-//                new CBViewHolderCreator<LocalImageHolderView>() {
-//                    @Override
-//                    public LocalImageHolderView createHolder() {
-//                        return new LocalImageHolderView();
-//                    }
-//                }, localImages)
-//                //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
-//                .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
-//                        //设置指示器的方向
-//                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT)
-//                .setOnItemClickListener(this);
-//        listView.addHeaderView(mConvenientBanner);
+        convenientBanner.setOnMoreClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                convenientBanner.startTurning(2000);
+                Toast.makeText(MainActivity.this, "More clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+        convenientBanner.getViewPager().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                    convenientBanner.stopTurning();
+                }
+                return false;
+            }
+        });
     }
-
-    //初始化网络图片缓存库
-    private void initImageLoader(){
-        //网络图片例子,结合常用的图片缓存库UIL,你可以根据自己需求自己换其他网络图片库
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().
-                showImageForEmptyUri(R.drawable.ic_default_adimage)
-                .cacheInMemory(true).cacheOnDisk(true).build();
-
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-                getApplicationContext()).defaultDisplayImageOptions(defaultOptions)
-                .threadPriority(Thread.NORM_PRIORITY - 2)
-                .denyCacheImageMultipleSizesInMemory()
-                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
-                .tasksProcessingOrder(QueueProcessingType.LIFO).build();
-        ImageLoader.getInstance().init(config);
-    }
-    /*
-    加入测试Views
-    * */
     private void loadTestDatas() {
         //本地图片集合
         for (int position = 0; position < 7; position++)
@@ -150,13 +117,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         transformerArrayAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * 通过文件名获取资源id 例子：getResId("icon", R.drawable.class);
-     *
-     * @param variableName
-     * @param c
-     * @return
-     */
     public static int getResId(String variableName, Class<?> c) {
         try {
             Field idField = c.getDeclaredField(variableName);
@@ -172,7 +132,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     protected void onResume() {
         super.onResume();
         //开始自动翻页
-        convenientBanner.startTurning(5000);
+        convenientBanner.startTurning(2000);
     }
 
      // 停止自动翻页
@@ -186,15 +146,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     //点击切换效果
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-//        点击后加入两个内容
-//        localImages.clear();
-//        localImages.add(R.drawable.ic_test_2);
-//        localImages.add(R.drawable.ic_test_4);
-//        convenientBanner.notifyDataSetChanged();
-
-        //控制是否循环
-//        convenientBanner.setCanLoop(!convenientBanner.isCanLoop());
 
 
         String transforemerName = transformerList.get(position);
@@ -225,7 +176,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
     @Override
     public void onPageSelected(int position) {
-        Toast.makeText(this,"监听到翻到第"+position+"了",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Selected pos "+position,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -234,6 +185,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(this,"点击了第"+position+"个",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Clicked pos "+position,Toast.LENGTH_SHORT).show();
     }
 }

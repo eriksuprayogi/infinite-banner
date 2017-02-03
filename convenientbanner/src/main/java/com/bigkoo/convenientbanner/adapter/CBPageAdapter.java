@@ -3,6 +3,7 @@ package com.bigkoo.convenientbanner.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,13 @@ import java.util.List;
 /**
  * Created by Sai on 15/7/29.
  */
-public class CBPageAdapter<T> extends FragmentPagerAdapter {
+public class CBPageAdapter<T> extends FragmentStatePagerAdapter {
     protected List<T> mDatas;
     protected CBViewHolderCreator holderCreator;
-//    private View.OnClickListener onItemClickListener;
+    //    private View.OnClickListener onItemClickListener;
     private boolean canLoop = true;
     private CBLoopViewPager viewPager;
+    private Holder holder;
     private final int MULTIPLE_COUNT = 300;
 
     public int toRealPosition(int position) {
@@ -35,22 +37,12 @@ public class CBPageAdapter<T> extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return canLoop ? getRealCount()*MULTIPLE_COUNT : getRealCount();
+        return canLoop ? getRealCount() * MULTIPLE_COUNT : getRealCount();
     }
 
     public int getRealCount() {
         return mDatas == null ? 0 : mDatas.size();
     }
-
-//    @Override
-//    public Object instantiateItem(ViewGroup container, int position) {
-//        int realPosition = toRealPosition(position);
-//
-//        View view = getView(realPosition, null, container);
-////        if(onItemClickListener != null) view.setOnClickListener(onItemClickListener);
-//        container.addView(view);
-//        return view;
-//    }
 
 
     @Override
@@ -62,6 +54,7 @@ public class CBPageAdapter<T> extends FragmentPagerAdapter {
 
     @Override
     public void finishUpdate(ViewGroup container) {
+        super.finishUpdate(container);
         int position = viewPager.getCurrentItem();
         if (position == 0) {
             position = viewPager.getFristItem();
@@ -70,12 +63,9 @@ public class CBPageAdapter<T> extends FragmentPagerAdapter {
         }
         try {
             viewPager.setCurrentItem(position, false);
-        }catch (IllegalStateException e){}
-    }
-
-    @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == object;
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setCanLoop(boolean canLoop) {
@@ -86,21 +76,15 @@ public class CBPageAdapter<T> extends FragmentPagerAdapter {
         this.viewPager = viewPager;
     }
 
-//    public CBPageAdapter(CBViewHolderCreator holderCreator, List<T> datas) {
-//        this.holderCreator = holderCreator;
-//        this.mDatas = datas;
-//    }
-
-
     public CBPageAdapter(FragmentManager fm, CBViewHolderCreator holderCreator, List<T> mDatas) {
         super(fm);
         this.holderCreator = holderCreator;
         this.mDatas = mDatas;
+        this.holder = (Holder) holderCreator.createHolder();
     }
 
 
     public Fragment getFragment(int position) {
-        Holder holder = (Holder) holderCreator.createHolder();
         return holder.createFragment(mDatas.get(position));
     }
 
