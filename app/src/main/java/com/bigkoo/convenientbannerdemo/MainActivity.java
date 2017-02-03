@@ -63,21 +63,19 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     private void init(){
         initImageLoader();
         loadTestDatas();
-        //本地图片例子
-        convenientBanner.setPages(
+
+        convenientBanner.setPages(getSupportFragmentManager(), 
                 new CBViewHolderCreator<LocalImageHolderView>() {
                     @Override
                     public LocalImageHolderView createHolder() {
                         return new LocalImageHolderView();
                     }
                 }, localImages)
-                //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
                 .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
-                //设置指示器的方向
-//                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT)
-//                .setOnPageChangeListener(this)//监听翻页事件
+                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT)
+//                .setOnPageChangeListener(this)
                 .setOnItemClickListener(this);
-
+        convenientBanner.getViewPager().setPageMargin(getResources().getDimensionPixelOffset(R.dimen.viewpager_margin));
 //        convenientBanner.setManualPageable(false);//设置不能手动影响
 
         //网络加载例子

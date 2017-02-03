@@ -1,5 +1,8 @@
 package com.bigkoo.convenientbanner.adapter;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +17,7 @@ import java.util.List;
 /**
  * Created by Sai on 15/7/29.
  */
-public class CBPageAdapter<T> extends PagerAdapter {
+public class CBPageAdapter<T> extends FragmentPagerAdapter {
     protected List<T> mDatas;
     protected CBViewHolderCreator holderCreator;
 //    private View.OnClickListener onItemClickListener;
@@ -39,21 +42,23 @@ public class CBPageAdapter<T> extends PagerAdapter {
         return mDatas == null ? 0 : mDatas.size();
     }
 
+//    @Override
+//    public Object instantiateItem(ViewGroup container, int position) {
+//        int realPosition = toRealPosition(position);
+//
+//        View view = getView(realPosition, null, container);
+////        if(onItemClickListener != null) view.setOnClickListener(onItemClickListener);
+//        container.addView(view);
+//        return view;
+//    }
+
+
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Fragment getItem(int position) {
         int realPosition = toRealPosition(position);
-
-        View view = getView(realPosition, null, container);
-//        if(onItemClickListener != null) view.setOnClickListener(onItemClickListener);
-        container.addView(view);
-        return view;
+        return getFragment(realPosition);
     }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        View view = (View) object;
-        container.removeView(view);
-    }
 
     @Override
     public void finishUpdate(ViewGroup container) {
@@ -81,23 +86,22 @@ public class CBPageAdapter<T> extends PagerAdapter {
         this.viewPager = viewPager;
     }
 
-    public CBPageAdapter(CBViewHolderCreator holderCreator, List<T> datas) {
+//    public CBPageAdapter(CBViewHolderCreator holderCreator, List<T> datas) {
+//        this.holderCreator = holderCreator;
+//        this.mDatas = datas;
+//    }
+
+
+    public CBPageAdapter(FragmentManager fm, CBViewHolderCreator holderCreator, List<T> mDatas) {
+        super(fm);
         this.holderCreator = holderCreator;
-        this.mDatas = datas;
+        this.mDatas = mDatas;
     }
 
-    public View getView(int position, View view, ViewGroup container) {
-        Holder holder = null;
-        if (view == null) {
-            holder = (Holder) holderCreator.createHolder();
-            view = holder.createView(container.getContext());
-            view.setTag(R.id.cb_item_tag, holder);
-        } else {
-            holder = (Holder<T>) view.getTag(R.id.cb_item_tag);
-        }
-        if (mDatas != null && !mDatas.isEmpty())
-            holder.UpdateUI(container.getContext(), position, mDatas.get(position));
-        return view;
+
+    public Fragment getFragment(int position) {
+        Holder holder = (Holder) holderCreator.createHolder();
+        return holder.createFragment(mDatas.get(position));
     }
 
 //    public void setOnItemClickListener(View.OnClickListener onItemClickListener) {

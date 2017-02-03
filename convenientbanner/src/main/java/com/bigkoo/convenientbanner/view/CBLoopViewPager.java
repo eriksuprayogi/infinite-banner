@@ -1,6 +1,7 @@
 package com.bigkoo.convenientbanner.view;
 
 import android.content.Context;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -18,7 +19,7 @@ public class CBLoopViewPager extends ViewPager {
     private boolean isCanScroll = true;
     private boolean canLoop = true;
 
-    public void setAdapter(PagerAdapter adapter, boolean canLoop) {
+    public void setAdapter(FragmentPagerAdapter adapter, boolean canLoop) {
         mAdapter = (CBPageAdapter) adapter;
         mAdapter.setCanLoop(canLoop);
         mAdapter.setViewPager(this);

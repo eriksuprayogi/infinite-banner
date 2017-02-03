@@ -2,7 +2,9 @@ package com.bigkoo.convenientbannerdemo.recyclerviewdemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,7 +29,7 @@ import java.util.List;
  * 这个是RecyclerView配合ConvenientBanner作为header的例子
  * 有issue反馈说RecyclerView刷新会出现空白图片，于是写了这个例子进行测试，也提供给对RecyclerView使用不熟悉的开发者进行参考吧。
  */
-public class ADRecyclerViewDemo extends Activity implements SwipeRefreshLayout.OnRefreshListener {
+public class ADRecyclerViewDemo extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView listView;
     private ArrayList<String> mDatas = new ArrayList<String>();
@@ -70,7 +72,7 @@ public class ADRecyclerViewDemo extends Activity implements SwipeRefreshLayout.O
         listView.setAdapter(adapter);
 
         networkImages= Arrays.asList(images);
-        convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
+        convenientBanner.setPages(getSupportFragmentManager(), new CBViewHolderCreator<NetworkImageHolderView>() {
             @Override
             public NetworkImageHolderView createHolder() {
                 return new NetworkImageHolderView();

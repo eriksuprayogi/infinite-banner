@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.PageTransformer;
 import android.util.AttributeSet;
@@ -114,9 +115,9 @@ public class ConvenientBanner<T> extends LinearLayout {
         }
     }
 
-    public ConvenientBanner setPages(CBViewHolderCreator holderCreator,List<T> datas){
+    public ConvenientBanner setPages(FragmentManager fragmentManager, CBViewHolderCreator holderCreator, List<T> datas){
         this.mDatas = datas;
-        pageAdapter = new CBPageAdapter(holderCreator,mDatas);
+        pageAdapter = new CBPageAdapter(fragmentManager, holderCreator,mDatas);
         viewPager.setAdapter(pageAdapter,canLoop);
 
         if (page_indicatorId != null)
